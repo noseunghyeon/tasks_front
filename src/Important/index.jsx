@@ -4,7 +4,7 @@ import Navibar from "../components/Navibar";
 const index = () => {
   return (
     <div className="page-section">
-      <Navibar />
+      <Navibar menuIdx={3} />
     </div>
   );
 };
