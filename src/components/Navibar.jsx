@@ -5,7 +5,7 @@ import { FcGoogle } from "react-icons/fc";
 import { GoogleLogin, GoogleOAuthProvider } from "@react-oauth/google";
 import { jwtDecode } from "jwt-decode";
 import { useDispatch, useSelector } from "react-redux";
-import { login } from "../redux/slices/authSlice";
+import { login, logout } from "../redux/slices/authSlice";
 
 // 구글 로그인 절차
 // 1. 그글 클라이언트 ID 발급
@@ -20,8 +20,9 @@ const Navibar = ({ menuIdx }) => {
   const googleClientId = process.env.REACT_APP_GOOGLE_CLIENT_ID;
   const user = useSelector((state) => state.auth.authData);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const { given_name } = user || {};
 
-  console.log(user);
+  // console.log(user);
 
   const handleLoginSucess = useCallback(
     (response) => {
@@ -44,12 +45,13 @@ const Navibar = ({ menuIdx }) => {
     }
   }, [dispatch]);
 
-  // (response) => {
-  //   console.log("sicess: ", jwtDecode(response.credential));
-  // };
-
   const handleLoginError = (error) => {
     console.log("error: ", error);
+  };
+
+  const handleLogoutClick = () => {
+    dispatch(logout());
+    setIsAuthenticated(false);
   };
 
   return (
@@ -59,7 +61,6 @@ const Navibar = ({ menuIdx }) => {
         <h2 className="font-semibold text-xl">
           <Link to="/">Rosh</Link>
         </h2>
-        <p>{isAuthenticated === false ? "false" : "true"}</p>
       </div>
 
       <ul className="menus">
@@ -77,18 +78,30 @@ const Navibar = ({ menuIdx }) => {
         ))}
       </ul>
 
-      <div className="w-4/5">
-        <GoogleOAuthProvider clientId={googleClientId}>
-          <GoogleLogin
-            onSuccess={handleLoginSucess}
-            onError={handleLoginError}
-          />
-          <button className="flex justify-center items-center gap-2 bg-gray-300 text-gray-900 py-3 px-4 rounded-md w-full">
+      {isAuthenticated ? (
+        <div className="w-4/5 flex justify-center">
+          <button
+            className="flex justify-center items-center gap-2 bg-gray-300 text-gray-900 py-3 px-4 rounded-md w-full"
+            onClick={handleLogoutClick}
+          >
             <FcGoogle className="w-5 h-5" />
-            <span className="text-sm">Google Login</span>
+            <span className="text-sm">{given_name}님 Logout</span>
           </button>
-        </GoogleOAuthProvider>
-      </div>
+        </div>
+      ) : (
+        <div className="w-4/5 flex justify-center login-btn">
+          <GoogleOAuthProvider clientId={googleClientId}>
+            <GoogleLogin
+              onSuccess={handleLoginSucess}
+              onError={handleLoginError}
+            />
+            <button className="flex justify-center items-center gap-2 bg-gray-300 text-gray-900 py-3 px-4 rounded-md w-full">
+              <FcGoogle className="w-5 h-5" />
+              <span className="text-sm">Google Login</span>
+            </button>
+          </GoogleOAuthProvider>
+        </div>
+      )}
     </nav>
   );
 };
