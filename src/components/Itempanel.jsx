@@ -6,6 +6,7 @@ import AddItem from "./AddItem";
 import { fetchGetItemsData } from "../redux/slices/apiSlice";
 import { SkeletonTheme } from "react-loading-skeleton";
 import LoadingSkeleton from "./LoadingSkeleton";
+import Modal from "./Modal";
 
 const Itempanel = ({ pageTitle }) => {
   const authData = useSelector((state) => state.auth.authData);
@@ -15,7 +16,8 @@ const Itempanel = ({ pageTitle }) => {
   // console.log(userKey);
 
   const getTasksData = useSelector((state) => state.apis.getItemsData);
-  // console.log(getTasksData);
+  const isOpen = useSelector((state) => state.modal.isOpen);
+  //console.log(isOpen);
 
   const [loading, setLoading] = useState(false);
 
@@ -39,6 +41,8 @@ const Itempanel = ({ pageTitle }) => {
     <div className="panel bg-[#212121] w-4/5 h-full rounded-md border border-gray-500 py-5 px-4 overflow-y-auto">
       {userKey ? (
         <div className="panel-wrapper w-full h-full">
+          {isOpen && <Modal />}
+
           <PageTitle title={pageTitle} />
           <div className="items flex flex-wrap">
             {loading ? (
