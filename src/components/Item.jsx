@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { MdEditDocument, MdDelete } from "react-icons/md";
 import { useDispatch } from "react-redux";
 import {
@@ -8,8 +8,12 @@ import {
 
 import { toast } from "react-toastify";
 
+import { confirmAlert } from "react-confirm-alert"; // Import
+import "react-confirm-alert/src/react-confirm-alert.css"; // Import css
+
 const Item = ({ task }) => {
-  console.log(task);
+  const [confirm, setConfirm] = useState(false);
+  // console.log(task);
   const { _id, title, description, date, iscompleted, isimportant, userid } =
     task;
   // console.log(_id, title, description, date, iscompleted, isimportant, userid);
@@ -29,10 +33,36 @@ const Item = ({ task }) => {
     return text;
   };
 
+  // custom confirm item
+  const deleteSubmit = () => {
+    return new Promise((resolve) => {
+      confirmAlert({
+        title: "아이템 삭제 확인",
+        message: "정말 삭제하시겠습니까?",
+        buttons: [
+          {
+            label: "Yes",
+            onClick: () => {
+              setConfirm(true);
+              resolve(true);
+            },
+          },
+          {
+            label: "No",
+            onClick: () => {
+              setConfirm(false);
+              resolve(false);
+            },
+          },
+        ],
+      });
+    });
+  };
   // delete item
   const handleDeleteItem = async () => {
-    const confirm = window.confirm("아이템을 삭제하시겠습니까?");
-    if (!confirm) return;
+    const result = await deleteSubmit();
+
+    if (!result) return;
 
     if (!_id) {
       toast.error("잘못된 사용자 접근입니다.");
