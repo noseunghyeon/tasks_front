@@ -1,9 +1,11 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import PageTitle from "./PageTitle";
 import Item from "./Item";
 import AddItem from "./AddItem";
 import { fetchGetItemsData } from "../redux/slices/apiSlice";
+import { SkeletonTheme } from "react-loading-skeleton";
+import LoadingSkeleton from "./LoadingSkeleton";
 
 const Itempanel = ({ pageTitle }) => {
   const authData = useSelector((state) => state.auth.authData);
@@ -13,16 +15,21 @@ const Itempanel = ({ pageTitle }) => {
   // console.log(userKey);
 
   const getTasksData = useSelector((state) => state.apis.getItemsData);
-  console.log(getTasksData);
+  // console.log(getTasksData);
+
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     if (!userKey) return;
 
     const fetchGetItems = async () => {
       try {
+        setLoading(true);
         await dispatch(fetchGetItemsData(userKey)).unwrap(); //useEffect 내부에서 dispatch 함수를 호출하여 thunk 함수 실행
       } catch (error) {
         console.error("Failed to Fetch Items: ", error);
+      } finally {
+        setLoading(false);
       }
     };
     fetchGetItems();
@@ -34,7 +41,21 @@ const Itempanel = ({ pageTitle }) => {
         <div className="panel-wrapper w-full h-full">
           <PageTitle title={pageTitle} />
           <div className="items flex flex-wrap">
-            <Item />
+            {loading ? (
+              <SkeletonTheme
+                baseColor="#202020"
+                highlightColor="#444"
+                width="100%"
+                height="25vh"
+              >
+                <LoadingSkeleton />
+                <LoadingSkeleton />
+                <LoadingSkeleton />
+              </SkeletonTheme>
+            ) : (
+              getTasksData?.map((item, idx) => <Item key={idx} task={item} />)
+            )}
+
             <AddItem />
           </div>
         </div>
