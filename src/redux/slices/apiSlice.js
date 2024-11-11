@@ -1,6 +1,14 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { DELETE_TASK_API_URL, GET_TASKS_API_URL } from "../../utils/apiUrl";
-import { deleteRequest, getRequest } from "../../utils/requestMethods";
+import {
+  DELETE_TASK_API_URL,
+  GET_TASKS_API_URL,
+  POST_TASK_API_URL,
+} from "../../utils/apiUrl";
+import {
+  deleteRequest,
+  getRequest,
+  postRequest,
+} from "../../utils/requestMethods";
 
 const getItemsFetchThunk = (actionType, apiURL) => {
   return createAsyncThunk(actionType, async (userId) => {
@@ -33,6 +41,23 @@ export const fetchDeleteItemData = deleteItemFetchThunk(
   DELETE_TASK_API_URL // 요청 url
 );
 
+const postItemFetchThunk = (actionType, apiURL) => {
+  return createAsyncThunk(actionType, async (postData) => {
+    // console.log(postData);
+    // console.log(apiURL);
+    const options = {
+      body: JSON.stringify(postData), // 표쥰 json문자열로 변환
+    };
+
+    return await postRequest(apiURL, options);
+  });
+};
+
+export const fetchPostItemData = postItemFetchThunk(
+  "fetchPostItem", //action type
+  POST_TASK_API_URL // 요청 url
+);
+
 const handleFulfilled = (stateKey) => (state, action) => {
   state[stateKey] = action.payload; // action.payload에 응답 데이터가 들어있음
 };
@@ -49,13 +74,16 @@ const apiSlice = createSlice({
     // 초기 상태 지정
     getItemsData: null,
     deleteItemData: null,
+    postItemData: null,
   },
   extraReducers: (builder) => {
     builder
       .addCase(fetchGetItemsData.fulfilled, handleFulfilled("getItemsData"))
       .addCase(fetchGetItemsData.rejected, handleRejected)
       .addCase(fetchDeleteItemData.fulfilled, handleFulfilled("deleteItemData"))
-      .addCase(fetchDeleteItemData.rejected, handleRejected);
+      .addCase(fetchDeleteItemData.rejected, handleRejected)
+      .addCase(fetchPostItemData.fulfilled, handleFulfilled("postItemData"))
+      .addCase(fetchPostItemData.rejected, handleRejected);
   },
 }); // slice 객체 저장
 
