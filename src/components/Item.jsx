@@ -97,7 +97,7 @@ const Item = ({ task }) => {
       <div className="w-full h-full border border-gray-500 rounded-md bg-gray-950 py-3 px-4 flex flex-col justify-between">
         <div className="upper">
           <h2 className="item-title text-xl font-normal mb-3 relative pb-2 flex justify-between">
-            <span className="itrm-line w-full absolute bottom-0 left-0 h-[1px] bg-gray-500"></span>
+            <span className="item-line w-full absolute bottom-0 left-0 h-[1px] bg-gray-500"></span>
             {title}
             <span
               className="text-sm py-1 px-3 border border-gray-500 rounded-md hover:bg-gray-700 cursor-pointer"
