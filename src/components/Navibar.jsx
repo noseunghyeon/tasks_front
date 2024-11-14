@@ -26,38 +26,6 @@ const Navbar = ({ menuIdx }) => {
   const user = useSelector((state) => state.auth.authData);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const { given_name } = user || {};
-  const [authSign, setAuthSign] = useState(
-    window.innerWidth < 1024 ? (
-      <RiLoginBoxFill />
-    ) : (
-      <button className="flex justify-center items-center gap-2 bg-gray-300 text-gray-900 py-3 px-4 rounded-md w-full">
-        <FcGoogle className="w-5 h-5" />
-        <span className="text-sm">Google Login</span>
-      </button>
-    )
-  );
-
-  const handleAuthSign = () => {
-    if (window.innerWidth < 1024) {
-      setAuthSign(<RiLoginBoxFill />);
-    } else {
-      setAuthSign(
-        <button className="flex justify-center items-center gap-2 bg-gray-300 text-gray-900 py-3 px-4 rounded-md w-full">
-          <FcGoogle className="w-5 h-5" />
-          <span className="text-sm">Google Login</span>
-        </button>
-      );
-    }
-  };
-
-  useEffect(() => {
-    window.addEventListener("resize", handleAuthSign);
-
-    // clean up
-    return () => {
-      window.removeEventListener("resize", handleAuthSign);
-    };
-  }, []);
 
   const handleLoginSucess = useCallback(
     (response) => {
@@ -90,9 +58,9 @@ const Navbar = ({ menuIdx }) => {
   };
 
   return (
-    <nav className="navi bg-[#212121] w-1/5 h-full rounded-sm border border-gray-500 py-10 px-4 flex flex-col justify-between items-center">
+    <nav className="navi bg-[#212121] lg:w-1/5 w-[80px] h-full rounded-sm border border-gray-500 py-10 px-4 flex flex-col justify-between items-center">
       <div className="logo-wrapper flex w-full items-center justify-center gap-8">
-        <div className="logo"></div>
+        <div className="logo scale-75 lg:scal-100"></div>
         <h2 className="font-semibold text-xl hidden lg:block">
           <Link to="/">MARSHALL</Link>
         </h2>
@@ -119,11 +87,12 @@ const Navbar = ({ menuIdx }) => {
       {isAuthenticated ? (
         <div className="w-4/5 flex justify-center">
           <button
-            className="flex justify-center items-center gap-2 bg-gray-300 text-gray-900 py-3 px-4 rounded-md w-full"
+            className="flex justify-center items-center gap-2 bg-gray-300 text-gray-900 py-3 px-4 rounded-md lg:w-full w-fit"
             onClick={handleLogoutClick}
           >
-            <FcGoogle className="w-5 h-5 hidden lg:inline" />
-            <span className="text-sm">
+            {/* <FcGoogle className="w-5 h-5 hidden lg:inline" />*/}
+            <RiLogoutBoxFill className="w-6 h-6" />
+            <span className="text-[10px] hidden lg:inline">
               <span className="hidden lg:inline">{given_name}님 </span>Logout
             </span>
           </button>
@@ -135,7 +104,11 @@ const Navbar = ({ menuIdx }) => {
               onSuccess={handleLoginSucess}
               onError={handleLoginError}
             />
-            {authSign}
+            <button className="flex justify-center items-center gap-2 bg-gray-300 text-gray-900 py-3 px-4 rounded-md lg:w-full w-fit ">
+              {/* <FcGoogle className="w-5 h-5" /> */}
+              <RiLoginBoxFill className="w-6 h-6" />
+              <span className="text-[10px] hidden lg:inline">Google Login</span>
+            </button>
           </GoogleOAuthProvider>
         </div>
       )}

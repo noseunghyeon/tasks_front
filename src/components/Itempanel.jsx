@@ -7,6 +7,7 @@ import { fetchGetItemsData } from "../redux/slices/apiSlice";
 import { SkeletonTheme } from "react-loading-skeleton";
 import LoadingSkeleton from "./LoadingSkeleton";
 import Modal from "./Modal";
+import { openModal } from "../redux/slices/modalSlice";
 
 const Itempanel = ({ pageTitle, filterCompleted, filterImportant }) => {
   // console.log(filterCompleted, filterImportant);
@@ -56,6 +57,10 @@ const Itempanel = ({ pageTitle, filterCompleted, filterImportant }) => {
   // - 두번째 filter 조건에서 filterImportant가 없으면 true이므로 모든 task를 반환(home, Completed, Proceeding과 동일)
   // - filterImportant가 true이면 task.isimportant가 true인 task만 반환
 
+  const handleOpenModal = () => {
+    dispatch(openModal({ modalType: "create", task: null }));
+  };
+
   const filterTasks = getTasksData
     ?.filter((task) => {
       if (filterCompleted === "all") return true;
@@ -67,12 +72,20 @@ const Itempanel = ({ pageTitle, filterCompleted, filterImportant }) => {
     });
 
   return (
-    <div className="panel bg-[#212121] w-4/5 h-full rounded-md border border-gray-500 py-5 px-4 overflow-y-auto">
+    <div className="panel bg-[#212121] lg:w-4/5 w-[calc(100%-80px)] h-full rounded-md border border-gray-500 py-5 px-4 overflow-y-auto">
       {userKey ? (
         <div className="panel-wrapper w-full h-full">
           {isOpen && <Modal />}
+          <div className="flex justify-between items-center">
+            <PageTitle title={pageTitle} />
+            <button
+              className="lg:text-sm text-[0.75rem] py-1 px-3 border border-gray-500 rounded-md hover:bg-gray-700 cursor-pointer"
+              onClick={handleOpenModal}
+            >
+              할일 추가
+            </button>
+          </div>
 
-          <PageTitle title={pageTitle} />
           <div className="items flex flex-wrap">
             {loading ? (
               <SkeletonTheme
@@ -95,7 +108,7 @@ const Itempanel = ({ pageTitle, filterCompleted, filterImportant }) => {
       ) : (
         <div className="w-full h-full flex items-center justify-center">
           <button className="flex justify-center items-center bg-gray-300 text-gray-900 py-2 px-4 rounded-md">
-            <span className="text-sm font-semibold cursor-default">
+            <span className="md:text-sm text-[0.675rem] font-semibold cursor-default">
               로그인이 필요한 서비스 입니다.
             </span>
           </button>
