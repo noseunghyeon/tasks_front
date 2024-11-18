@@ -1,5 +1,5 @@
 // const rootPath = "http://localhost:8000";
-const rootPath = "http://3.85.134.110";
+const rootPath = "https://back.seunghyeon.site";
 
 const GET_TASKS_API_URL = `${rootPath}/getTasks`;
 const DELETE_TASK_API_URL = `${rootPath}/deleteTask`;
